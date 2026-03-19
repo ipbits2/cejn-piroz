@@ -17,129 +17,91 @@
             background-size: cover; background-position: center; background-attachment: fixed;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh;
-            overflow-x: hidden;
         }
 
         .container {
-            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(12px);
+            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(10px);
             padding: 40px 20px; border-radius: 25px; border: 2px solid var(--gold);
             text-align: center; width: 85%; max-width: 450px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.8);
-            position: relative;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7);
         }
 
-        h1 { color: var(--gold); font-size: 2.2rem; margin-bottom: 5px; text-shadow: 2px 2px 4px black; }
+        h1 { color: var(--gold); font-size: 2.3rem; margin-bottom: 5px; text-shadow: 2px 2px 4px black; }
         .input-group { margin: 30px 0; }
-        
         input {
             width: 85%; padding: 15px; border-radius: 30px; border: 2px solid var(--gold);
-            text-align: center; font-size: 1.1rem; outline: none; background: white; color: #333;
+            text-align: center; font-size: 1.1rem; background: white; color: #333;
         }
 
         .btn {
             background: var(--gold); color: #000; padding: 12px 40px; border: none;
             border-radius: 30px; font-weight: bold; cursor: pointer; margin-top: 15px;
-            transition: 0.3s; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+            transition: 0.3s; font-size: 1.1rem;
         }
-        .btn:hover { transform: scale(1.05); background: #f1c40f; }
+        .btn:hover { transform: scale(1.1); background: #f1c40f; }
 
-        #result { display: none; margin-top: 20px; animation: zoomIn 0.8s ease; }
-        @keyframes zoomIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        #result { display: none; margin-top: 20px; }
+        #finalMessage { font-size: 1.7rem; font-weight: bold; line-height: 1.6; }
 
-        #finalMessage { font-size: 1.8rem; font-weight: bold; line-height: 1.6; }
-
-        .social-links { margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 20px; }
-        .social-links a { color: white; font-size: 1.8rem; margin: 0 12px; transition: 0.3s; }
-        .social-links a:hover { color: var(--gold); }
+        .social-links { margin-top: 25px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 20px; }
+        .social-links a {
+            color: white; font-size: 1.8rem; margin: 0 15px; transition: 0.3s; text-decoration: none;
+        }
+        .social-links a:hover { color: var(--gold); transform: translateY(-5px); }
         
         .share-btn {
-            display: inline-block; background: #25d366; color: white; padding: 12px 25px;
-            border-radius: 20px; text-decoration: none; margin-top: 20px; font-weight: bold;
-        }
-
-        /* موزیک کۆنترۆڵ (ئەگەر بڤێت بێدەنگ بکەن) */
-        #music-control {
-            position: absolute; top: 15px; right: 20px; cursor: pointer; color: var(--gold); font-size: 1.2rem;
+            display: inline-block; background: #25d366; color: white; padding: 10px 20px;
+            border-radius: 15px; text-decoration: none; margin-top: 15px; font-weight: bold;
         }
     </style>
 </head>
 <body>
 
-<audio id="eidMusic" loop>
-    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-    </audio>
-
 <div class="container">
-    <div id="music-control" onclick="toggleMusic()"><i id="music-icon" class="fas fa-volume-mute"></i></div>
-
     <div id="setup">
         <h1>جەژنا وە پیرۆز بیت</h1>
-        <p style="margin-top: 0;">ژ لایێ لاپەرێ <b>Sarsing Town</b></p>
+        <p>ژ لایێ لاپەرێ <b>Sarsing Town</b></p>
         <div class="input-group">
             <input type="text" id="userName" placeholder="ناڤێ خۆ بنڤیسە...">
             <br>
-            <button class="btn" onclick="celebrateNow()">کارتێ من چێکە 🌙</button>
+            <button class="btn" onclick="start()">کارتا من چێکە</button>
         </div>
     </div>
 
     <div id="result">
         <div id="finalMessage"></div>
-        <a href="#" class="share-btn" onclick="shareToWA()"><i class="fab fa-whatsapp"></i> نێرین بۆ واتسئاپێ</a>
-        <p style="font-size: 0.8rem; margin-top: 15px; opacity: 0.7;">سەرکەفتی بی پێشەوار (Ipbits)</p>
+        <a href="#" class="share-btn" onclick="share()"><i class="fab fa-whatsapp"></i> نێرین بۆ واتسئاپێ</a>
     </div>
 
     <div class="social-links">
+        <p style="font-size: 0.9rem; margin-bottom: 10px;">دگەل مە بن ل سۆشیال میدیایێ:</p>
         <a href="https://facebook.com/SarsingTown" target="_blank"><i class="fab fa-facebook"></i></a>
         <a href="https://instagram.com/SarsingTown" target="_blank"><i class="fab fa-instagram"></i></a>
     </div>
 </div>
 
 <script>
-    var music = document.getElementById("eidMusic");
-    var musicIcon = document.getElementById("music-icon");
-
-    function celebrateNow() {
+    function start() {
         let name = document.getElementById("userName").value;
         if(!name.trim()) return alert("تکایە ناڤەکێ بنڤیسە!");
 
-        // دەسپێکرنا موزیکێ
-        music.play();
-        musicIcon.className = "fas fa-volume-up";
-
         document.getElementById("setup").style.display = "none";
         document.getElementById("result").style.display = "block";
-        
         document.getElementById("finalMessage").innerHTML = 
-            "<span style='font-size:1.2rem; color:white;'>🌹 جەژنا تە پیرۆز بیت 🌹</span><br>" +
-            "<span style='color:var(--gold); font-size:2.2rem;'>" + name + "</span>" +
-            "<br><p style='font-size:1.1rem; font-weight:normal;'>ئەڤە پیرۆزباهیا منە تایبەت بۆ تە</p>";
+            "🌹 جەژنا تە پیرۆز بیت 🌹<br><span style='color:var(--gold)'>" + name + "</span>" +
+            "<br><p style='font-size:1.1rem'>ئەڤە پیرۆزباهیا منە تایبەت بۆ تە</p>";
 
-        // گولەباران
-        var duration = 5 * 1000;
-        var animationEnd = Date.now() + duration;
-        var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
-
-        var interval = setInterval(function() {
-            var timeLeft = animationEnd - Date.now();
-            if (timeLeft <= 0) return clearInterval(interval);
-            var particleCount = 50 * (timeLeft / duration);
-            confetti(Object.assign({}, defaults, { particleCount, origin: { x: Math.random(), y: Math.random() - 0.2 } }));
-        }, 250);
+        var end = Date.now() + 4000;
+        (function frame() {
+            confetti({ particleCount: 4, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#d4af37', '#ffffff'] });
+            confetti({ particleCount: 4, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#d4af37', '#ffffff'] });
+            if (Date.now() < end) requestAnimationFrame(frame);
+        }());
     }
 
-    function toggleMusic() {
-        if (music.paused) {
-            music.play();
-            musicIcon.className = "fas fa-volume-up";
-        } else {
-            music.pause();
-            musicIcon.className = "fas fa-volume-mute";
-        }
-    }
-
-    function shareToWA() {
+    function share() {
         let url = window.location.href;
-        window.open("https://wa.me/?text=" + encodeURIComponent("جەژن پیرۆز بیت! ئەڤە کارتەکا پیرۆزباهیێ یە بۆ تە: " + url));
+        window.open("https://wa.me/?text=" + encodeURIComponent("جەژن پیرۆز بیت! کارتەکا پیرۆزباهیێ بۆ تە یا ل ڤێرێ: " + url));
     }
 </script>
 
